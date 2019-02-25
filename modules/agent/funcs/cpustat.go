@@ -18,6 +18,7 @@ import (
 	"github.com/open-falcon/falcon-plus/common/model"
 	"github.com/toolkits/nux"
 	"sync"
+	"runtime"
 )
 
 const (
@@ -162,6 +163,9 @@ func CpuPrepared() bool {
 	defer psLock.RUnlock()
 	return procStatHistory[1] != nil
 }
+func CpuCores() int {
+	return runtime.NumCPU()
+}
 
 func CpuMetrics() []*model.MetricValue {
 	if !CpuPrepared() {
@@ -180,5 +184,6 @@ func CpuMetrics() []*model.MetricValue {
 	steal := GaugeValue("cpu.steal", CpuSteal())
 	guest := GaugeValue("cpu.guest", CpuGuest())
 	switches := CounterValue("cpu.switches", CurrentCpuSwitches())
-	return []*model.MetricValue{idle, busy, user, nice, system, iowait, irq, softirq, steal, guest, switches}
+	cores := GaugeValue("cpu.cores", CpuCores())
+	return []*model.MetricValue{idle, busy, user, nice, system, iowait, irq, softirq, steal, guest, switches, cores}
 }
