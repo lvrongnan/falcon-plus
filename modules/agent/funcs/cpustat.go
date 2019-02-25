@@ -163,8 +163,8 @@ func CpuPrepared() bool {
 	defer psLock.RUnlock()
 	return procStatHistory[1] != nil
 }
-func CpuCores() int {
-	return runtime.NumCPU()
+func CpuCores() uint64 {
+	return uint64(runtime.NumCPU())
 }
 
 func CpuMetrics() []*model.MetricValue {
